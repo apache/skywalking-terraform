@@ -13,6 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-provider "aws" {
-    region = "us-east-1"
+variable "region" {
+  type        = string
+  description = "Physical location for clustered data centers."
+  default     = "us-east-1"
+}
+
+variable "ami" {
+  type        = string
+  description = "Amazon Machine Image"
+  default     = "ami-026ebd4cfe2c043b2"
+}
+
+variable "instance_type" {
+  type        = string
+  description = "CPU, memory, storage and networking capacity"
+  default     = "t2.medium"
+}
+
+variable "public_key_path" {
+  type        = string
+  description = "Path to the public key file"
+  default     = "~/.ssh/skywalking-terraform.pub"
 }
