@@ -24,7 +24,7 @@ resource "aws_instance" "skywalking" {
     Name = "skywalking-terraform"
     Description = "Installing and configuring Skywalking on AWS"
   }
-  key_name = aws_key_pair.ssh-user.id
+  key_name = var.keep_key_pair ? aws_key_pair.ssh-user.id : null
   vpc_security_group_ids = [ aws_security_group.ssh-access.id ]
 }
 
