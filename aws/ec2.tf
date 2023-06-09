@@ -49,3 +49,8 @@ resource "aws_security_group" "ssh-access" {
 resource "aws_key_pair" "ssh-user" {
     public_key = file(var.public_key_path)
 }
+
+resource "local_file" "write_to_host_file" {
+  content  = "[skywalking-machine]\n${aws_instance.skywalking.public_ip}"
+  filename = "${path.module}/../ansible/inventory/hosts"
+}
