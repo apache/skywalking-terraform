@@ -36,3 +36,9 @@ variable "public_key_path" {
   description = "Path to the public key file"
   default     = "~/.ssh/skywalking-terraform.pub"
 }
+
+variable "keep_key_pair" {
+  description = "Controls whether to keep the key pair or not"
+  type        = bool
+  default     = true
+}
