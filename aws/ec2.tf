@@ -13,13 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+provider "aws" {
+    region = var.region
+}
+
 resource "aws_instance" "skywalking" {
-  ami = "ami-026ebd4cfe2c043b2"
-  instance_type = "t2.medium"
+  ami = var.ami
+  instance_type = var.instance_type
   tags = {
     Name = "skywalking-terraform"
-    Description = "Skywalking installed on RHEL"
+    Description = "Installing and configuring Skywalking on AWS"
   }
+  key_name = aws_key_pair.ssh-user.id
   vpc_security_group_ids = [ aws_security_group.ssh-access.id ]
 }
 
@@ -41,6 +46,6 @@ resource "aws_security_group" "ssh-access" {
   ]
 }
 
-output publicip {
-  value = aws_instance.skywalking.public_ip
+resource "aws_key_pair" "ssh-user" {
+    public_key = file(var.public_key_path)
 }
