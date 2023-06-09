@@ -36,3 +36,9 @@ variable "public_key_path" {
   description = "Path to the public key file"
   default     = "~/.ssh/skywalking-terraform.pub"
 }
+
+variable "extra_tags" {
+  description = "Additional tags to be added to all resources"
+  type        = map(string)
+  default     = {}
+}

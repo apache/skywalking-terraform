@@ -20,10 +20,13 @@ provider "aws" {
 resource "aws_instance" "skywalking" {
   ami = var.ami
   instance_type = var.instance_type
-  tags = {
-    Name = "skywalking-terraform"
-    Description = "Installing and configuring Skywalking on AWS"
-  }
+  tags = merge(
+    {
+      Name = "skywalking-terraform"
+      Description = "Installing and configuring Skywalking on AWS"
+    },
+    var.extra_tags
+  )
   key_name = aws_key_pair.ssh-user.id
   vpc_security_group_ids = [ aws_security_group.ssh-access.id ]
 }
@@ -44,8 +47,10 @@ resource "aws_security_group" "ssh-access" {
       self            = false
     }
   ]
+  tags = var.extra_tags
 }
 
 resource "aws_key_pair" "ssh-user" {
     public_key = file(var.public_key_path)
+    tags = var.extra_tags
 }
