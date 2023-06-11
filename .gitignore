@@ -22,6 +22,7 @@ aws/.terraform/
 aws/.terraform.lock.hcl
 aws/terraform.tfstate
 aws/terraform.tfstate.backup
+ansible/inventory/hosts
 
 # This serves as a template but will ONLY be updated when building a source release tar,
 # so we don't track future updates of this file.
