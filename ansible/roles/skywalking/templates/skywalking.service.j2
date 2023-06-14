@@ -13,12 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[defaults]
-roles_path = roles/
-inventory = inventory/
-timeout = 60
+[Unit]
+Description=Apache SkyWalking APM
+After=network.target
 
-[privilege_escalation]
-become = yes
-become_method = sudo
-become_flags = 'su -c'
+[Service]
+User=root
+WorkingDirectory=/usr/local/skywalking
+ExecStart=/usr/local/skywalking/bin/startup.sh
+ExecStop=/usr/local/skywalking/bin/startup.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

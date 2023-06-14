@@ -13,12 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[defaults]
-roles_path = roles/
-inventory = inventory/
-timeout = 60
+---
+- name: Download and configure Apache SkyWalking APM
+  hosts: skywalking_server
+  gather_facts: false
 
-[privilege_escalation]
-become = yes
-become_method = sudo
-become_flags = 'su -c'
+  roles:
+    - skywalking
