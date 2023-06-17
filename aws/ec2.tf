@@ -17,13 +17,29 @@ provider "aws" {
     region = var.region
 }
 
-resource "aws_instance" "skywalking" {
+resource "aws_instance" "skywalking-oap" {
+  count = var.oap_instance_count
   ami = var.ami
   instance_type = var.instance_type
   tags = merge(
     {
-      Name = "skywalking-terraform"
-      Description = "Installing and configuring Skywalking on AWS"
+      Name = "skywalking-oap"
+      Description = "Installing and configuring Skywalking OAPService on AWS"
+    },
+    var.extra_tags
+  )
+  key_name = aws_key_pair.ssh-user.id
+  vpc_security_group_ids = [ aws_security_group.ssh-access.id ]
+}
+
+resource "aws_instance" "skywalking-ui" {
+  count = var.ui_instance_count
+  ami = var.ami
+  instance_type = var.instance_type
+  tags = merge(
+    {
+      Name = "skywalking-ui"
+      Description = "Installing and configuring Skywalking UI on AWS"
     },
     var.extra_tags
   )
@@ -55,7 +71,22 @@ resource "aws_key_pair" "ssh-user" {
     tags = var.extra_tags
 }
 
-resource "local_file" "write_to_host_file" {
-  content  = "[skywalking-machine]\n${aws_instance.skywalking.public_ip}"
-  filename = "${path.module}/../ansible/inventory/hosts"
+resource "local_file" "oap_instance_ips" {
+  count = var.oap_instance_count
+  content = join("\n", flatten([
+    ["[skywalking-oap]"],
+    aws_instance.skywalking-oap.*.public_ip,
+    [""]  # Adds an empty string for the trailing newline
+  ]))
+  filename = "${path.module}/../ansible/inventory/oap-server"
+}
+
+resource "local_file" "ui_instance_ips" {
+  count = var.ui_instance_count
+  content = join("\n", flatten([
+    ["[skywalking-ui]"],
+    aws_instance.skywalking-ui.*.public_ip,
+    [""]  # Adds an empty string for the trailing newline
+  ]))
+  filename = "${path.module}/../ansible/inventory/ui-server"
 }
