@@ -13,6 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+variable "oap_instance_count" {
+  type    = number
+  default = 1
+}
+
+variable "ui_instance_count" {
+  type    = number
+  default = 1
+}
+
 variable "region" {
   type        = string
   description = "Physical location for clustered data centers."
