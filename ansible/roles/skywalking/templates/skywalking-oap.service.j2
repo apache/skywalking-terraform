@@ -14,14 +14,14 @@
 # limitations under the License.
 
 [Unit]
-Description=Apache SkyWalking APM
+Description=Apache SkyWalking OAP Service
 After=network.target
 
 [Service]
-User=root
-WorkingDirectory=/usr/local/skywalking
-ExecStart=/usr/local/skywalking/bin/startup.sh
-ExecStop=/usr/local/skywalking/bin/startup.sh
+Type=simple
+ExecStartPre=/usr/local/skywalking/bin/oapServiceInit.sh
+ExecStart=/usr/local/skywalking/bin/oapService.sh
+ExecStop=/bin/kill -SIGTERM $MAINPID
 Restart=always
 
 [Install]

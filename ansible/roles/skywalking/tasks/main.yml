@@ -38,29 +38,51 @@
 
 - name: Extract tar file
   unarchive:
-    src: "/usr/local/skywalking/apache-skywalking-apm-9.4.0.tar.gz"
+    src: "/usr/local/skywalking/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
     dest: "/usr/local/skywalking"
     remote_src: yes
     extra_opts: [--strip-components=1]
 
-- name: Generate systemd unit file
+- name: Generate systemd unit file for oap service
   template:
-    src: skywalking.service.j2
-    dest: /usr/lib/systemd/system/skywalking.service
+    src: skywalking-oap.service.j2
+    dest: /usr/lib/systemd/system/skywalking-oap.service
     owner: root
     mode: "0660"
+  when: inventory_hostname in groups['skywalking-oap']
+
+- name: Generate systemd unit file for webui service
+  template:
+    src: skywalking-ui.service.j2
+    dest: /usr/lib/systemd/system/skywalking-ui.service
+    owner: root
+    mode: "0660"
+  when: inventory_hostname in groups['skywalking-ui']
 
 - name: Reload systemd
   systemd:
     daemon_reload: yes
 
-- name: Link and enable skywalking service
+- name: Link and enable skywalking-oap service
   systemd:
-    name: skywalking
+    name: skywalking-oap
     enabled: yes
+  when: inventory_hostname in groups['skywalking-oap']
 
-- name: Start Apache SkyWalking service
+- name: Link and enable skywalking-ui service
   systemd:
-    name: skywalking
-    state: started
+    name: skywalking-ui
     enabled: yes
+  when: inventory_hostname in groups['skywalking-ui']
+
+- name: Start SkyWalking-OAP service
+  systemd:
+    name: skywalking-oap
+    state: started
+  when: inventory_hostname in groups['skywalking-oap']
+
+- name: Start SkyWalking-UI service
+  systemd:
+    name: skywalking-ui
+    state: started
+  when: inventory_hostname in groups['skywalking-ui']

@@ -13,5 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
-skywalking_version: "9.5.0"
+[Unit]
+Description=Apache SkyWalking UI Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/skywalking/bin/webappService.sh
+ExecStop=/bin/kill -SIGTERM \$MAINPID
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

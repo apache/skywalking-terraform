@@ -14,8 +14,15 @@
 # limitations under the License.
 
 ---
-- name: Download and configure Apache SkyWalking APM
-  hosts: skywalking_server
+- name: Download and configure Apache SkyWalking APM OAP Service
+  hosts: skywalking-oap
+  gather_facts: false
+
+  roles:
+    - skywalking
+
+- name: Download and configure Apache SkyWalking APM UI Service
+  hosts: skywalking-ui
   gather_facts: false
 
   roles:
