@@ -20,7 +20,7 @@ After=network.target
 [Service]
 Type=simple
 ExecStart=/usr/local/skywalking/bin/webappService.sh
-ExecStop=/bin/kill -SIGTERM \$MAINPID
+ExecStop=/bin/kill -SIGTERM $MAINPID
 Restart=always
 
 [Install]
