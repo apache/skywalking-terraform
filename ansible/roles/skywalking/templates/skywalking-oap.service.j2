@@ -20,8 +20,10 @@ After=network.target
 [Service]
 Type=simple
 ExecStartPre=/usr/local/skywalking/bin/oapServiceInit.sh
+TimeoutStartSec=600
 ExecStart=/usr/local/skywalking/bin/oapService.sh
-ExecStop=/bin/kill -SIGTERM $MAINPID
+TimeoutSec=300
+ExecStop=/bin/bash -c '/usr/local/skywalking/bin/oapServiceStop.sh'
 Restart=always
 
 [Install]

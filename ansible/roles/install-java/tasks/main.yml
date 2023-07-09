@@ -14,22 +14,14 @@
 # limitations under the License.
 
 ---
-- name: Install Java
-  hosts: skywalking-oap
-  gather_facts: true
-  roles:
-    - install-java
+- name: Install Java 11 on RHEL-based systems
+  package:
+    name: java-11-openjdk
+    state: present
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
 
-- name: Download and configure Apache SkyWalking APM OAP Service
-  hosts: skywalking-oap
-  gather_facts: false
-
-  roles:
-    - skywalking
-
-- name: Download and configure Apache SkyWalking APM UI Service
-  hosts: skywalking-ui
-  gather_facts: false
-
-  roles:
-    - skywalking
+- name: Install Java 11 on Ubuntu systems
+  package:
+    name: openjdk-11-jdk
+    state: present
+  when: ansible_distribution == 'Ubuntu'

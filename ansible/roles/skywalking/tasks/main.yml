@@ -51,6 +51,14 @@
     mode: "0660"
   when: inventory_hostname in groups['skywalking-oap']
 
+- name: Generate script to stop oap service
+  template:
+    src: oap-service-stop.sh.j2
+    dest: /usr/local/skywalking/bin/oapServiceStop.sh
+    owner: root
+    mode: "0755"
+  when: inventory_hostname in groups['skywalking-oap']
+
 - name: Generate systemd unit file for webui service
   template:
     src: skywalking-ui.service.j2

@@ -1,3 +1,4 @@
+#!/bin/bash
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -13,23 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
----
-- name: Install Java
-  hosts: skywalking-oap
-  gather_facts: true
-  roles:
-    - install-java
+# Send SIGTERM to the main process
+/bin/kill -SIGTERM $MAINPID
 
-- name: Download and configure Apache SkyWalking APM OAP Service
-  hosts: skywalking-oap
-  gather_facts: false
-
-  roles:
-    - skywalking
-
-- name: Download and configure Apache SkyWalking APM UI Service
-  hosts: skywalking-ui
-  gather_facts: false
-
-  roles:
-    - skywalking
+# Find all child processes and send SIGTERM to each of them
+for child_pid in $(pgrep -P $MAINPID); do
+    /bin/kill -SIGTERM $child_pid
+done
