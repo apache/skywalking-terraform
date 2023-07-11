@@ -13,12 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[defaults]
-roles_path = roles/
-inventory = inventory/
-timeout = 60
+---
+- name: Install Java
+  hosts: skywalking-oap
+  gather_facts: true
+  roles:
+    - install-java
 
-[privilege_escalation]
-become = yes
-become_method = sudo
-become_flags = 'su -c'
+- name: Download and configure Apache SkyWalking APM OAP Service
+  hosts: skywalking-oap
+  gather_facts: false
+
+  roles:
+    - skywalking
+
+- name: Download and configure Apache SkyWalking APM UI Service
+  hosts: skywalking-ui
+  gather_facts: false
+
+  roles:
+    - skywalking

@@ -13,12 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[defaults]
-roles_path = roles/
-inventory = inventory/
-timeout = 60
+[Unit]
+Description=Apache SkyWalking OAP Service
+After=network.target
 
-[privilege_escalation]
-become = yes
-become_method = sudo
-become_flags = 'su -c'
+[Service]
+Type=simple
+ExecStartPre=/usr/local/skywalking/bin/oapServiceInit.sh
+TimeoutStartSec=600
+ExecStart=/usr/local/skywalking/bin/oapService.sh
+TimeoutSec=300
+ExecStop=/bin/bash -c '/usr/local/skywalking/bin/oapServiceStop.sh'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

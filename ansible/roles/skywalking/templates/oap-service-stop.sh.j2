@@ -1,3 +1,4 @@
+#!/bin/bash
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -13,12 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[defaults]
-roles_path = roles/
-inventory = inventory/
-timeout = 60
+# Send SIGTERM to the main process
+/bin/kill -SIGTERM $MAINPID
 
-[privilege_escalation]
-become = yes
-become_method = sudo
-become_flags = 'su -c'
+# Find all child processes and send SIGTERM to each of them
+for child_pid in $(pgrep -P $MAINPID); do
+    /bin/kill -SIGTERM $child_pid
+done

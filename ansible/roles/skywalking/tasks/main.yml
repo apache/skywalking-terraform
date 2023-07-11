@@ -1,0 +1,96 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+- name: Create skywalking directory
+  file:
+    path: /usr/local/skywalking
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Set ownership and permissions for skywalking directory
+  file:
+    path: /usr/local/skywalking
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download Apache SkyWalking tar file
+  get_url:
+    url: "https://dlcdn.apache.org/skywalking/{{ skywalking_version }}/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
+    dest: "/usr/local/skywalking/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
+
+- name: Extract tar file
+  unarchive:
+    src: "/usr/local/skywalking/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
+    dest: "/usr/local/skywalking"
+    remote_src: yes
+    extra_opts: [--strip-components=1]
+
+- name: Generate systemd unit file for oap service
+  template:
+    src: skywalking-oap.service.j2
+    dest: /usr/lib/systemd/system/skywalking-oap.service
+    owner: root
+    mode: "0660"
+  when: inventory_hostname in groups['skywalking-oap']
+
+- name: Generate script to stop oap service
+  template:
+    src: oap-service-stop.sh.j2
+    dest: /usr/local/skywalking/bin/oapServiceStop.sh
+    owner: root
+    mode: "0755"
+  when: inventory_hostname in groups['skywalking-oap']
+
+- name: Generate systemd unit file for webui service
+  template:
+    src: skywalking-ui.service.j2
+    dest: /usr/lib/systemd/system/skywalking-ui.service
+    owner: root
+    mode: "0660"
+  when: inventory_hostname in groups['skywalking-ui']
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Link and enable skywalking-oap service
+  systemd:
+    name: skywalking-oap
+    enabled: yes
+  when: inventory_hostname in groups['skywalking-oap']
+
+- name: Link and enable skywalking-ui service
+  systemd:
+    name: skywalking-ui
+    enabled: yes
+  when: inventory_hostname in groups['skywalking-ui']
+
+- name: Start SkyWalking-OAP service
+  systemd:
+    name: skywalking-oap
+    state: started
+  when: inventory_hostname in groups['skywalking-oap']
+
+- name: Start SkyWalking-UI service
+  systemd:
+    name: skywalking-ui
+    state: started
+  when: inventory_hostname in groups['skywalking-ui']

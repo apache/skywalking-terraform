@@ -13,12 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[defaults]
-roles_path = roles/
-inventory = inventory/
-timeout = 60
+---
+- name: Install Java 11 on RHEL-based systems
+  package:
+    name: java-11-openjdk
+    state: present
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
 
-[privilege_escalation]
-become = yes
-become_method = sudo
-become_flags = 'su -c'
+- name: Install Java 11 on Ubuntu systems
+  package:
+    name: openjdk-11-jdk
+    state: present
+  when: ansible_distribution == 'Ubuntu'
