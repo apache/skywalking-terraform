@@ -43,20 +43,26 @@
     remote_src: yes
     extra_opts: [--strip-components=1]
 
+- name: Check hostgroup size
+  set_fact:
+    group_size: "{{ groups['skywalking-oap'] | length }}"
+    oap_standalone: "{{ [groups['skywalking-oap'][0]] }}"
+    oap_bundled: "{{ groups['skywalking-oap'][1:] if groups['skywalking-oap'] | length > 1 else [] }}"
+
+- name: Run the OAPSericeInit script
+  shell: /usr/local/skywalking/bin/oapServiceInit.sh
+  when: inventory_hostname in oap_standalone
+
+- name: Run the OAPSericeNoInit script
+  shell: /usr/local/skywalking/bin/oapServiceNoInit.sh
+  when: inventory_hostname in oap_bundled
+
 - name: Generate systemd unit file for oap service
   template:
     src: skywalking-oap.service.j2
     dest: /usr/lib/systemd/system/skywalking-oap.service
     owner: root
     mode: "0660"
-  when: inventory_hostname in groups['skywalking-oap']
-
-- name: Generate script to stop oap service
-  template:
-    src: oap-service-stop.sh.j2
-    dest: /usr/local/skywalking/bin/oapServiceStop.sh
-    owner: root
-    mode: "0755"
   when: inventory_hostname in groups['skywalking-oap']
 
 - name: Generate systemd unit file for webui service
