@@ -15,7 +15,7 @@
 
 ---
 - name: Install Java
-  hosts: skywalking-oap
+  hosts: all
   gather_facts: true
   roles:
     - install-java
