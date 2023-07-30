@@ -21,9 +21,9 @@ After=network.target
 Type=simple
 ExecStart=/usr/local/skywalking/bin/oapService.sh
 TimeoutSec=300
-ExecStop=/bin/kill -SIGTERM $MAINPID
-ExecReload=/bin/kill -s HUP $MAINPID
-Restart=always
+KillMode=process
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
