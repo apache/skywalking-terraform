@@ -14,14 +14,17 @@
 # limitations under the License.
 
 [Unit]
-Description=Apache SkyWalking UI Service
+Description=Apache SkyWalking WebUI Service
 After=network.target
 
 [Service]
 Type=simple
+EnvironmentFile=/usr/local/skywalking/webapp/webui_env
 ExecStart=/usr/local/skywalking/bin/webappService.sh
-ExecStop=/bin/kill -SIGTERM $MAINPID
-Restart=always
+TimeoutSec=300
+KillMode=process
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

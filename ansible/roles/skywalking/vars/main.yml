@@ -15,3 +15,12 @@
 
 ---
 skywalking_version: "9.5.0"
+sw_ui_server_port: "8080"
+sw_oap_server_port: "12800"
+sw_zipkin_address: "9412"
+
+sw_ui_env_vars:
+  SW_SERVER_PORT: "{{ sw_ui_server_port }}"
+  SW_OAP_ADDRESS: "{% for host in groups['skywalking-oap'] %}http://{{ hostvars[host].ansible_host }}:{{ sw_oap_server_port }}{% if not loop.last %},{% endif %}{% endfor %}}"
+  SW_ZIPKIN_ADDEESS: "{% for host in groups['skywalking-oap'] %}http://{{ hostvars[host].ansible_host }}:{{ sw_zipkin_address }}{% if not loop.last %},{% endif %}{% endfor %}}"
+env_file: /usr/local/skywalking/webapp/sw_ui_env_file
