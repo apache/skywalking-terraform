@@ -29,12 +29,6 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "ami" {
-  type        = string
-  description = "Amazon Machine Image"
-  default     = "ami-026ebd4cfe2c043b2"
-}
-
 variable "instance_type" {
   type        = string
   description = "CPU, memory, storage and networking capacity"
@@ -43,8 +37,8 @@ variable "instance_type" {
 
 variable "public_key_path" {
   type        = string
-  description = "Path to the public key file"
-  default     = "~/.ssh/skywalking-terraform.pub"
+  description = "Path to store the key file for SSH access to the instances"
+  default     = "~/.ssh"
 }
 
 variable "extra_tags" {

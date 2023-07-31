@@ -19,32 +19,38 @@ provider "aws" {
 
 resource "aws_instance" "skywalking-oap" {
   count = var.oap_instance_count
-  ami = var.ami
+  ami = data.aws_ami.amazon-linux.id
   instance_type = var.instance_type
   tags = merge(
     {
       Name = "skywalking-oap"
-      Description = "Installing and configuring Skywalking OAPService on AWS"
+      Description = "Installing and configuring SkyWalking OAPService on AWS"
     },
     var.extra_tags
   )
   key_name = aws_key_pair.ssh-user.id
-  vpc_security_group_ids = [ aws_security_group.ssh-access.id ]
+  vpc_security_group_ids = [
+    aws_security_group.ssh-access.id,
+    aws_security_group.public-egress-access.id
+  ]
 }
 
 resource "aws_instance" "skywalking-ui" {
   count = var.ui_instance_count
-  ami = var.ami
+  ami = data.aws_ami.amazon-linux.id
   instance_type = var.instance_type
   tags = merge(
     {
       Name = "skywalking-ui"
-      Description = "Installing and configuring Skywalking UI on AWS"
+      Description = "Installing and configuring SkyWalking UI on AWS"
     },
     var.extra_tags
   )
   key_name = aws_key_pair.ssh-user.id
-  vpc_security_group_ids = [ aws_security_group.ssh-access.id ]
+  vpc_security_group_ids = [
+    aws_security_group.ssh-access.id,
+    aws_security_group.public-egress-access.id
+  ]
 }
 
 resource "aws_security_group" "ssh-access" {
@@ -66,9 +72,23 @@ resource "aws_security_group" "ssh-access" {
   tags = var.extra_tags
 }
 
-resource "aws_key_pair" "ssh-user" {
-    public_key = file(var.public_key_path)
-    tags = var.extra_tags
+resource "aws_security_group" "public-egress-access" {
+  name = "public-egress-access"
+  description = "Allow access to the Internet"
+  egress = [
+    {
+      from_port = 0
+      to_port = 0
+      protocol = -1
+      cidr_blocks = ["0.0.0.0/0"]
+      description     = "Allow access to the Internet"
+      ipv6_cidr_blocks = []
+      prefix_list_ids = []
+      security_groups = []
+      self            = false
+    }
+  ]
+  tags = var.extra_tags
 }
 
 resource "local_file" "oap_instance_ips" {
