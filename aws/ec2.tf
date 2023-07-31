@@ -94,7 +94,7 @@ resource "aws_security_group" "public-egress-access" {
 resource "local_file" "oap_instance_ips" {
   count = var.oap_instance_count
   content = join("\n", flatten([
-    ["[skywalking-oap]"],
+    ["[skywalking_oap]"],
     aws_instance.skywalking-oap.*.public_ip,
     [""]  # Adds an empty string for the trailing newline
   ]))
@@ -104,7 +104,7 @@ resource "local_file" "oap_instance_ips" {
 resource "local_file" "ui_instance_ips" {
   count = var.ui_instance_count
   content = join("\n", flatten([
-    ["[skywalking-ui]"],
+    ["[skywalking_ui]"],
     aws_instance.skywalking-ui.*.public_ip,
     [""]  # Adds an empty string for the trailing newline
   ]))
