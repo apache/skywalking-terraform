@@ -29,5 +29,5 @@ resource "aws_key_pair" "ssh-user" {
 resource "local_file" "ssh-user" {
   filename        = "${pathexpand(var.public_key_path)}/${aws_key_pair.ssh-user.key_name}.pem"
   content         = tls_private_key.ssh-user.private_key_pem
-  file_permission = "0700"
+  file_permission = "0600"
 }

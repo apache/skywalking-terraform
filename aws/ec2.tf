@@ -99,6 +99,7 @@ resource "local_file" "oap_instance_ips" {
     [""]  # Adds an empty string for the trailing newline
   ]))
   filename = "${path.module}/../ansible/inventory/oap-server"
+  file_permission = "0600"
 }
 
 resource "local_file" "ui_instance_ips" {
@@ -109,4 +110,5 @@ resource "local_file" "ui_instance_ips" {
     [""]  # Adds an empty string for the trailing newline
   ]))
   filename = "${path.module}/../ansible/inventory/ui-server"
+  file_permission = "0600"
 }
