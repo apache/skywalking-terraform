@@ -37,5 +37,5 @@ You should see output similar to the following, note the `SUCCESS` status:
 - Install Apache SkyWalking!
 
 ```shell
-ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u ec2-user --private-key "$SSH_KEY_FILE"
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u ec2-user --private-key "$SSH_KEY_FILE" playbooks/install-skywalking.yml
 ```
