@@ -25,3 +25,9 @@
     name: openjdk-11-jdk
     state: present
   when: ansible_distribution == 'Ubuntu'
+
+- name: Install Java 11 on Amazon distribution
+  package:
+    name: java-11-amazon-corretto
+    state: present
+  when: ansible_distribution == 'Amazon'

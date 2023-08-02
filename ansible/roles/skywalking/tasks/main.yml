@@ -45,9 +45,9 @@
 
 - name: Check hostgroup size
   set_fact:
-    group_size: "{{ groups['skywalking-oap'] | length }}"
-    oap_standalone: "{{ [groups['skywalking-oap'][0]] }}"
-    oap_bundled: "{{ groups['skywalking-oap'][1:] if groups['skywalking-oap'] | length > 1 else [] }}"
+    group_size: "{{ groups['skywalking_oap'] | length }}"
+    oap_standalone: "{{ [groups['skywalking_oap'][0]] }}"
+    oap_bundled: "{{ groups['skywalking_oap'][1:] if groups['skywalking_oap'] | length > 1 else [] }}"
 
 - name: Run the OAPSericeInit script
   shell: /usr/local/skywalking/bin/oapServiceInit.sh
@@ -63,7 +63,7 @@
     dest: /usr/lib/systemd/system/skywalking-oap.service
     owner: root
     mode: "0660"
-  when: inventory_hostname in groups['skywalking-oap']
+  when: inventory_hostname in groups['skywalking_oap']
 
 - name: Generate systemd unit file for webui service
   template:
@@ -71,7 +71,7 @@
     dest: /usr/lib/systemd/system/skywalking-ui.service
     owner: root
     mode: "0660"
-  when: inventory_hostname in groups['skywalking-ui']
+  when: inventory_hostname in groups['skywalking_ui']
 
 - name: Registration of OAP Server address within WebUI environment file
   ansible.builtin.lineinfile:
@@ -88,22 +88,22 @@
   systemd:
     name: skywalking-oap
     enabled: yes
-  when: inventory_hostname in groups['skywalking-oap']
+  when: inventory_hostname in groups['skywalking_oap']
 
 - name: Link and enable skywalking-ui service
   systemd:
     name: skywalking-ui
     enabled: yes
-  when: inventory_hostname in groups['skywalking-ui']
+  when: inventory_hostname in groups['skywalking_ui']
 
 - name: Start SkyWalking-OAP service
   systemd:
     name: skywalking-oap
     state: started
-  when: inventory_hostname in groups['skywalking-oap']
+  when: inventory_hostname in groups['skywalking_oap']
 
 - name: Start SkyWalking-UI service
   systemd:
     name: skywalking-ui
     state: started
-  when: inventory_hostname in groups['skywalking-ui']
+  when: inventory_hostname in groups['skywalking_ui']
