@@ -79,6 +79,7 @@
     line: "{{ item.key }}={{ item.value }}"
     create: yes
   loop: "{{ sw_ui_env_vars | dict2items }}"
+  when: inventory_hostname in groups['skywalking_ui']
 
 - name: Reload systemd
   systemd:
