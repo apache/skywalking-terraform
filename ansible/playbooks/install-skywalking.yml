@@ -20,16 +20,8 @@
   roles:
     - install-java
 
-- name: Download and configure Apache SkyWalking APM OAP Service
-  hosts: skywalking_oap
+- name: Download and configure Apache SkyWalking APM Service on all hosts
+  hosts: all
   gather_facts: false
-
-  roles:
-    - skywalking
-
-- name: Download and configure Apache SkyWalking APM UI Service
-  hosts: skywalking_ui
-  gather_facts: false
-
   roles:
     - skywalking
