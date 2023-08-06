@@ -16,11 +16,12 @@
 #
 
 github:
-  description: Terraform modules for Apache SkyWalking
+  description: Terraform modules and Ansible playbook for Apache SkyWalking
   homepage: https://skywalking.apache.org/
   labels:
     - skywalking
     - terraform
+    - ansible
   enabled_merge_buttons:
     squash:  true
     merge:   false
