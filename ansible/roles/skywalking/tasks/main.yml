@@ -14,21 +14,13 @@
 # limitations under the License.
 
 ---
-- name: Create skywalking directory
-  file:
-    path: /usr/local/skywalking
-    state: directory
-    mode: "0755"
-    owner: root
-    group: root
-
-- name: Set ownership and permissions for skywalking directory
+- name: Create and set permissions for skywalking directory
   file:
     path: /usr/local/skywalking
     state: directory
     recurse: yes
-    owner: root
-    group: root
+    owner: skywalking
+    group: skywalking
     mode: "0755"
 
 - name: Download Apache SkyWalking tar file
@@ -42,6 +34,13 @@
     dest: "/usr/local/skywalking"
     remote_src: yes
     extra_opts: [--strip-components=1]
+
+- name: Set ownership for extracted files
+  ansible.builtin.file:
+    path: /usr/local/skywalking
+    owner: skywalking
+    group: skywalking
+    recurse: yes
 
 - name: Check hostgroup size
   set_fact:
