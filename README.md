@@ -14,7 +14,11 @@ more cloud vendors:
 ## Prerequisites
 
 1. Terraform installed
-2. AWS CLI set up with appropriate permissions
+2. AWS Credentials: Ensure your environment is set up with the necessary AWS credentials. This can be done in various ways, such as:
+  - Configuring using the AWS CLI.
+  - Setting up environment variables (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`).
+  - Using IAM roles with necessary permissions if you're running Terraform on an AWS EC2 instance.
+  - For more information on configuring AWS credentials for Terraform, see the [official documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#authentication-and-configuration).
 3. A working knowledge of Terraform and AWS resources
 
 ## Instructions
@@ -97,7 +101,6 @@ SSH access is open to the entire internet (`0.0.0.0/0`). This is not recommended
 
 You can use the Ansible playbook in combination with the Terraform to create necessary infrastructure and install
 SkyWalking on the created infrastructure, or you can use the Ansible to install SkyWalking on the existing infrastructure.
-The Ansible playbook and documentation about how to use it can be found in the [ansible](ansible) folder.
 
 This guide provides steps on using Ansible to install Apache SkyWalking on AWS instances.
 
