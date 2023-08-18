@@ -49,11 +49,11 @@
     oap_bundled: "{{ groups['skywalking_oap'][1:] if groups['skywalking_oap'] | length > 1 else [] }}"
 
 - name: Run the OAPSericeInit script
-  shell: /usr/local/skywalking/bin/oapServiceInit.sh
+  shell: "sudo -u skywalking /usr/local/skywalking/bin/oapServiceInit.sh"
   when: inventory_hostname in oap_standalone
 
 - name: Run the OAPSericeNoInit script
-  shell: /usr/local/skywalking/bin/oapServiceNoInit.sh
+  shell: "sudo -u skywalking /usr/local/skywalking/bin/oapServiceNoInit.sh"
   when: inventory_hostname in oap_bundled
 
 - name: Generate systemd unit file for oap service

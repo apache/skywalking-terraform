@@ -14,15 +14,22 @@
 # limitations under the License.
 
 ---
-- hosts: all
+- name: Create skywalking group
+  hosts: all
   gather_facts: false
   tasks:
-  - name: Create user skywalking
-    become: true
-    user:
-      name: skywalking
-      group: skywalking
-      state: present
+    - group:
+        name: skywalking
+        state: present
+
+- name: Create skywalking user
+  hosts: all
+  gather_facts: false
+  tasks:
+    - user:
+        name: skywalking
+        group: skywalking
+        state: present
 
 - name: Install Java
   hosts: all
