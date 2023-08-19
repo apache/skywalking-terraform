@@ -31,7 +31,8 @@ resource "aws_instance" "skywalking-oap" {
   key_name = aws_key_pair.ssh-user.id
   vpc_security_group_ids = [
     aws_security_group.ssh-access.id,
-    aws_security_group.public-egress-access.id
+    aws_security_group.public-egress-access.id,
+    aws_security_group.ui-to-oap-communication.id
   ]
 }
 
@@ -88,6 +89,18 @@ resource "aws_security_group" "public-egress-access" {
       self            = false
     }
   ]
+  tags = var.extra_tags
+}
+
+resource "aws_security_group" "ui-to-oap-communication" {
+  name        = "ui-to-oap-communication"
+  description = "Allow communication from SkyWalking UI to SkyWalking OAP"
+  ingress {
+    from_port      = 0
+    to_port        = 12800
+    protocol       = "tcp"
+    security_groups = [aws_security_group.public-egress-access.id]
+  }
   tags = var.extra_tags
 }
 
