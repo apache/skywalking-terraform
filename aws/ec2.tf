@@ -99,6 +99,7 @@ resource "aws_security_group" "ui-to-oap-communication" {
     from_port      = 0
     to_port        = 12800
     protocol       = "tcp"
+    cidr_blocks    = ["0.0.0.0/0"]
     security_groups = [aws_security_group.public-egress-access.id]
   }
   tags = var.extra_tags
