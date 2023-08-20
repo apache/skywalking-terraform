@@ -23,4 +23,4 @@ sw_ui_env_vars:
   SW_SERVER_PORT: "{{ sw_ui_server_port }}"
   SW_OAP_ADDRESS: "{% for host in groups['skywalking_oap'] %}http://{{ hostvars[host].inventory_hostname }}:{{ sw_oap_server_port }}{% if not loop.last %},{% endif %}{% endfor %}"
   SW_ZIPKIN_ADDRESS: "{% for host in groups['skywalking_oap'] %}http://{{ hostvars[host].inventory_hostname }}:{{ sw_zipkin_address }}{% if not loop.last %},{% endif %}{% endfor %}"
-env_file: /usr/local/skywalking/webapp/sw_ui_env_file
+env_file: /home/skywalking/webapp/sw_ui_env_file

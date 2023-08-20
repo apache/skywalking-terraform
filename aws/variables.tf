@@ -32,7 +32,7 @@ variable "region" {
 variable "instance_type" {
   type        = string
   description = "CPU, memory, storage and networking capacity"
-  default     = "t2.medium"
+  default     = "t2.large"
 }
 
 variable "public_key_path" {

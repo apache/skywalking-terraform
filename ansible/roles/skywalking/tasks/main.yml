@@ -14,30 +14,21 @@
 # limitations under the License.
 
 ---
-- name: Create and set permissions for skywalking directory
-  file:
-    path: /usr/local/skywalking
-    state: directory
-    recurse: yes
-    owner: skywalking
-    group: skywalking
-    mode: "0755"
-
 - name: Download Apache SkyWalking tar file
   get_url:
     url: "https://dlcdn.apache.org/skywalking/{{ skywalking_version }}/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
-    dest: "/usr/local/skywalking/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
+    dest: "/home/skywalking/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
 
 - name: Extract tar file
   unarchive:
-    src: "/usr/local/skywalking/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
-    dest: "/usr/local/skywalking"
+    src: "/home/skywalking/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
+    dest: "/home/skywalking"
     remote_src: yes
     extra_opts: [--strip-components=1]
 
 - name: Set ownership for extracted files
   ansible.builtin.file:
-    path: /usr/local/skywalking
+    path: /home/skywalking
     owner: skywalking
     group: skywalking
     recurse: yes
@@ -49,11 +40,11 @@
     oap_bundled: "{{ groups['skywalking_oap'][1:] if groups['skywalking_oap'] | length > 1 else [] }}"
 
 - name: Run the OAPSericeInit script
-  shell: "sudo -u skywalking /usr/local/skywalking/bin/oapServiceInit.sh"
+  shell: "sudo -u skywalking /home/skywalking/bin/oapServiceInit.sh"
   when: inventory_hostname in oap_standalone
 
 - name: Run the OAPSericeNoInit script
-  shell: "sudo -u skywalking /usr/local/skywalking/bin/oapServiceNoInit.sh"
+  shell: "sudo -u skywalking /home/skywalking/bin/oapServiceNoInit.sh"
   when: inventory_hostname in oap_bundled
 
 - name: Generate systemd unit file for oap service
@@ -61,6 +52,7 @@
     src: skywalking-oap.service.j2
     dest: /usr/lib/systemd/system/skywalking-oap.service
     owner: root
+    group: root
     mode: "0660"
   when: inventory_hostname in groups['skywalking_oap']
 
@@ -69,6 +61,7 @@
     src: skywalking-ui.service.j2
     dest: /usr/lib/systemd/system/skywalking-ui.service
     owner: root
+    group: root
     mode: "0660"
   when: inventory_hostname in groups['skywalking_ui']
 
