@@ -42,6 +42,50 @@
     group: skywalking
     recurse: yes
 
+# TODO - remove this task once skywalking 9.6.0 is released
+- name: Find all .sh files in the directory
+  find:
+    paths: /usr/local/skywalking/bin/
+    patterns: "*.sh"
+    recurse: no
+  register: shell_files
+
+# TODO - remove this task once skywalking 9.6.0 is released
+- name: Find the line number of the specific string for each file
+  command: "sudo -u skywalking awk '/if \\[ \\$\\? -eq 0 \\]; then/ {print NR}' {{ item.path }}"
+  register: line_numbers
+  loop: "{{ shell_files.files }}"
+  changed_when: False
+
+# TODO - remove this task once skywalking 9.6.0 is released
+- name: Remove all lines after the specific string for each file
+  command:
+    cmd: "sudo -u skywalking sed -i '/if \\[ \\$\\? -eq 0 \\]; then/,$d' {{ item.item.path }}"
+  loop: "{{ line_numbers.results }}"
+  when: item.stdout | int > 0
+  loop_control:
+    label: "{{ item.item.path }}"
+
+# TODO - remove this task once skywalking 9.6.0 is released
+- name: Remove "&" from the specified line in the oap script
+  shell: |
+    sudo -u skywalking sed -i 's/^\( *2>${OAP_LOG_DIR}\/oap\.log 1> \/dev\/null\)[ ]*&"/\1"/' "{{ item.path }}"
+  with_items: "{{ shell_files.files }}"
+  when: inventory_hostname in groups['skywalking_oap']
+
+# TODO - remove this task once skywalking 9.6.0 is released
+- name: Remove "&" from the specified line in the webapp script
+  shell: |
+    sudo -u skywalking sed -i 's/^\( *2>${WEBAPP_LOG_DIR}\/webapp-console\.log 1> \/dev\/null\)[ ]*&"/\1"/' "{{ item.path }}"
+  with_items: "{{ shell_files.files }}"
+  when: inventory_hostname in groups['skywalking_ui']
+
+# TODO - remove this task once skywalking 9.6.0 is released
+- name: Update memory setting in the file
+  shell: |
+    sudo -u skywalking sed -i 's/-Xmx512M/-Xmx4096M/g' "{{ item.path }}"
+  with_items: "{{ shell_files.files }}"
+
 - name: Check hostgroup size
   set_fact:
     group_size: "{{ groups['skywalking_oap'] | length }}"
@@ -61,6 +105,7 @@
     src: skywalking-oap.service.j2
     dest: /usr/lib/systemd/system/skywalking-oap.service
     owner: root
+    group: root
     mode: "0660"
   when: inventory_hostname in groups['skywalking_oap']
 
@@ -69,6 +114,7 @@
     src: skywalking-ui.service.j2
     dest: /usr/lib/systemd/system/skywalking-ui.service
     owner: root
+    group: root
     mode: "0660"
   when: inventory_hostname in groups['skywalking_ui']
 
