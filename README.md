@@ -6,7 +6,7 @@ no matter on-premises or on cloud vendors, such as AWS.
 
 # Terraform
 
-**Notice, Terraform had changed the LICENSE of Terraform from MPL 2.0 to BSL/BUSL 1.1 since its 1.5.6 release. We don't have hard-dependencies on Terraform.**
+**Notice, HashiCorp had changed the LICENSE of Terraform from MPL 2.0 to BSL/BUSL 1.1 since its 1.5.6 release. We don't have hard-dependencies on Terraform.**
 
 **OpenTF Foundation announced to maintain the MPL 2.0 based fork of Terraform. Read their [announcement](https://opentf.org/announcement) and [website](https://opentf.org/) for more details.**
 
