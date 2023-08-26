@@ -6,6 +6,12 @@ no matter on-premises or on cloud vendors, such as AWS.
 
 # Terraform
 
+**Notice, Terraform had changed the LICENSE of Terraform from MPL 2.0 to BSL/BUSL 1.1 since its 1.5.6 release. We don't have hard-dependencies on Terraform.**
+
+**OpenTF Foundation announced to maintain the MPL 2.0 based fork of Terraform. Read their [announcement](https://opentf.org/announcement) and [website](https://opentf.org/) for more details.**
+
+**All Terraform and/or OpenTF scripts are just for end-user convenience. The Apache 2.0 License is only for the scripts.**
+
 For now, we have supported the following cloud vendors, and we welcome everyone to contribute supports for
 more cloud vendors:
 
