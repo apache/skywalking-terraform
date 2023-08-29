@@ -23,24 +23,28 @@
     group: skywalking
     mode: "0755"
 
-- name: Download Apache SkyWalking tar file
+- name: Download Apache SkyWalking tarball
+  when: skywalking_tarball is match('^https?://.*')
   get_url:
-    url: "https://dlcdn.apache.org/skywalking/{{ skywalking_version }}/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
-    dest: "/usr/local/skywalking/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
+    url: "{{ skywalking_tarball }}"
+    timeout: 120
+    dest: /usr/local/skywalking/apache-skywalking-apm.tar.gz
+
+- name: Upload Local Apache SkyWalking tarball
+  when: skywalking_tarball is not match('^https?://.*')
+  ansible.builtin.copy:
+    src: "{{ skywalking_tarball }}"
+    dest: /usr/local/skywalking/apache-skywalking-apm.tar.gz
+    owner: skywalking
+    group: skywalking
+    mode: '0755'
 
 - name: Extract tar file
   unarchive:
-    src: "/usr/local/skywalking/apache-skywalking-apm-{{ skywalking_version }}.tar.gz"
+    src: /usr/local/skywalking/apache-skywalking-apm.tar.gz
     dest: "/usr/local/skywalking"
     remote_src: yes
     extra_opts: [--strip-components=1]
-
-- name: Set ownership for extracted files
-  ansible.builtin.file:
-    path: /usr/local/skywalking
-    owner: skywalking
-    group: skywalking
-    recurse: yes
 
 - name: Check hostgroup size
   set_fact:
