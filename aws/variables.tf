@@ -29,6 +29,18 @@ variable "region" {
   default     = "us-east-1"
 }
 
+variable "access_key" {
+  type        = string
+  description = "Access key of the AWS account"
+  default     = ""
+}
+
+variable "secret_key" {
+  type        = string
+  description = "Secret key of the AWS account"
+  default     = ""
+}
+
 variable "instance_type" {
   type        = string
   description = "CPU, memory, storage and networking capacity"

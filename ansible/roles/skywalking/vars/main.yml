@@ -14,7 +14,11 @@
 # limitations under the License.
 
 ---
-skywalking_version: "9.5.0"
+# skywalking_tarball can be a remote URL or a local path, if it's a remote URL
+# the remote file will be downloaded to the remote host and then extracted,
+# if it's a local path, the local file will be copied to the remote host and
+# then extracted.
+skywalking_tarball: "https://dist.apache.org/repos/dist/release/skywalking/9.5.0/apache-skywalking-apm-9.5.0.tar.gz"
 sw_ui_server_port: "8080"
 sw_oap_server_port: "12800"
 sw_zipkin_address: "9412"
