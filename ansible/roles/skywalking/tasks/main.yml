@@ -23,14 +23,13 @@
     group: skywalking
     mode: "0755"
 
-- name: Download Apache SkyWalking tarball
+- name: Download remote Apache SkyWalking tarball
   when: skywalking_tarball is match('^https?://.*')
   get_url:
     url: "{{ skywalking_tarball }}"
-    timeout: 120
     dest: /usr/local/skywalking/apache-skywalking-apm.tar.gz
 
-- name: Upload Local Apache SkyWalking tarball
+- name: Upload local Apache SkyWalking tarball
   when: skywalking_tarball is not match('^https?://.*')
   ansible.builtin.copy:
     src: "{{ skywalking_tarball }}"
@@ -39,26 +38,39 @@
     group: skywalking
     mode: '0755'
 
-- name: Extract tar file
+- name: Extract tarball
   unarchive:
     src: /usr/local/skywalking/apache-skywalking-apm.tar.gz
-    dest: "/usr/local/skywalking"
+    dest: /usr/local/skywalking
     remote_src: yes
+    owner: skywalking
+    group: skywalking
     extra_opts: [--strip-components=1]
+
+- name: Generate environment file for webui service
+  template:
+    src: skywalking-ui.env.j2
+    dest: /home/skywalking/webapp.env
+    owner: skywalking
+    mode: "0660"
+  when: inventory_hostname in groups['skywalking_ui']
+
+- name: Generate environment file for OAP service
+  template:
+    src: skywalking-oap.env.j2
+    dest: /home/skywalking/oap.env
+    owner: skywalking
+    mode: "0660"
+  when: inventory_hostname in groups['skywalking_oap']
 
 - name: Check hostgroup size
   set_fact:
     group_size: "{{ groups['skywalking_oap'] | length }}"
-    oap_standalone: "{{ [groups['skywalking_oap'][0]] }}"
-    oap_bundled: "{{ groups['skywalking_oap'][1:] if groups['skywalking_oap'] | length > 1 else [] }}"
+    oap_init_node: "{{ [groups['skywalking_oap'][0]] }}"
 
 - name: Run the OAPSericeInit script
-  shell: "sudo -u skywalking /usr/local/skywalking/bin/oapServiceInit.sh"
-  when: inventory_hostname in oap_standalone
-
-- name: Run the OAPSericeNoInit script
-  shell: "sudo -u skywalking /usr/local/skywalking/bin/oapServiceNoInit.sh"
-  when: inventory_hostname in oap_bundled
+  command: "sudo -u skywalking /usr/local/skywalking/bin/oapServiceInit.sh" 
+  when: inventory_hostname in oap_init_node
 
 - name: Generate systemd unit file for oap service
   template:
@@ -74,14 +86,6 @@
     dest: /usr/lib/systemd/system/skywalking-ui.service
     owner: root
     mode: "0660"
-  when: inventory_hostname in groups['skywalking_ui']
-
-- name: Registration of OAP Server address within WebUI environment file
-  ansible.builtin.lineinfile:
-    path: "{{ env_file }}"
-    line: "{{ item.key }}={{ item.value }}"
-    create: yes
-  loop: "{{ sw_ui_env_vars | dict2items }}"
   when: inventory_hostname in groups['skywalking_ui']
 
 - name: Reload systemd
@@ -111,3 +115,4 @@
     name: skywalking-ui
     state: started
   when: inventory_hostname in groups['skywalking_ui']
+

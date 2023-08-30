@@ -14,17 +14,19 @@
 # limitations under the License.
 
 ---
-# skywalking_tarball can be a remote URL or a local path, if it's a remote URL
+# `skywalking_tarball` can be a remote URL or a local path, if it's a remote URL
 # the remote file will be downloaded to the remote host and then extracted,
 # if it's a local path, the local file will be copied to the remote host and
 # then extracted.
 skywalking_tarball: "https://dist.apache.org/repos/dist/release/skywalking/9.5.0/apache-skywalking-apm-9.5.0.tar.gz"
-sw_ui_server_port: "8080"
-sw_oap_server_port: "12800"
-sw_zipkin_address: "9412"
 
-sw_ui_env_vars:
-  SW_SERVER_PORT: "{{ sw_ui_server_port }}"
-  SW_OAP_ADDRESS: "{% for host in groups['skywalking_oap'] %}http://{{ hostvars[host].inventory_hostname }}:{{ sw_oap_server_port }}{% if not loop.last %},{% endif %}{% endfor %}"
-  SW_ZIPKIN_ADDRESS: "{% for host in groups['skywalking_oap'] %}http://{{ hostvars[host].inventory_hostname }}:{{ sw_zipkin_address }}{% if not loop.last %},{% endif %}{% endfor %}"
-env_file: /usr/local/skywalking/webapp/sw_ui_env_file
+# `skywalking_ui_environment` is a dictionary of environment variables that will
+# be sourced when running the skywalking-ui service. All environment variables
+# that are supported by SkyWalking webapp can be set here.
+skywalking_ui_environment: {}
+
+# `skywalking_oap_environment` is a dictionary of environment variables that will
+# be sourced when running the skywalking-oap service. All environment variables
+# that are supported by SkyWalking OAP can be set here.
+skywalking_oap_environment: {}
+
