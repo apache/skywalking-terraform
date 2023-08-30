@@ -167,3 +167,32 @@ After confirming connectivity, proceed to install Apache SkyWalking using the An
 ```
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u ec2-user --private-key "$SSH_KEY_FILE" playbooks/install-skywalking.yml
 ```
+
+### 4. Configurations
+
+The Ansible playbook can be customized to install Apache SkyWalking with
+different configurations. The following variables can be modified to suit your
+needs: 
+
+> For full configurations, refer to the
+> [ansible/roles/skywalking/vars/main.yml](ansible/roles/skywalking/vars/main.yml).
+> file.
+
+```yaml
+# `skywalking_tarball` can be a remote URL or a local path, if it's a remote URL
+# the remote file will be downloaded to the remote host and then extracted,
+# if it's a local path, the local file will be copied to the remote host and
+# then extracted.
+skywalking_tarball: "https://dist.apache.org/repos/dist/release/skywalking/9.5.0/apache-skywalking-apm-9.5.0.tar.gz"
+
+# `skywalking_ui_environment` is a dictionary of environment variables that will
+# be sourced when running the skywalking-ui service. All environment variables
+# that are supported by SkyWalking webapp can be set here.
+skywalking_ui_environment: {}
+
+# `skywalking_oap_environment` is a dictionary of environment variables that will
+# be sourced when running the skywalking-oap service. All environment variables
+# that are supported by SkyWalking OAP can be set here.
+skywalking_oap_environment: {}
+
+```

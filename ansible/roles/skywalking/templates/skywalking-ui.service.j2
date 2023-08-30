@@ -19,7 +19,7 @@ After=network.target
 
 [Service]
 Type=simple
-EnvironmentFile=/usr/local/skywalking/webapp/sw_ui_env_file
+EnvironmentFile=/home/skywalking/webapp.env
 User=skywalking
 Group=skywalking
 ExecStart=/usr/local/skywalking/bin/webappService.sh
