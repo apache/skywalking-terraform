@@ -52,7 +52,7 @@
     src: skywalking-ui.env.j2
     dest: /home/skywalking/webapp.env
     owner: skywalking
-    mode: "0660"
+    mode: "0600"
   when: inventory_hostname in groups['skywalking_ui']
 
 - name: Generate environment file for OAP service
@@ -60,7 +60,7 @@
     src: skywalking-oap.env.j2
     dest: /home/skywalking/oap.env
     owner: skywalking
-    mode: "0660"
+    mode: "0600"
   when: inventory_hostname in groups['skywalking_oap']
 
 - name: Check hostgroup size
@@ -69,7 +69,7 @@
     oap_init_node: "{{ [groups['skywalking_oap'][0]] }}"
 
 - name: Run the OAPSericeInit script
-  command: "sudo -u skywalking /usr/local/skywalking/bin/oapServiceInit.sh" 
+  command: "sudo -u skywalking -- sh -c 'set -a; source /home/skywalking/oap.env; set +a; /usr/local/skywalking/bin/oapServiceInit.sh'"
   when: inventory_hostname in oap_init_node
 
 - name: Generate systemd unit file for oap service

@@ -13,20 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[Unit]
-Description=Apache SkyWalking OAP Service
-After=network.target
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 5.0"
 
-[Service]
-Type=simple
-User=skywalking
-Group=skywalking
-EnvironmentFile=/home/skywalking/oap.env
-ExecStart=/usr/local/skywalking/bin/oapServiceNoInit.sh
-TimeoutSec=300
-KillMode=process
-ExecReload=/bin/kill -HUP $MAINPID
-Restart=on-failure
+  name = var.cluster_name
+  cidr = var.cidr
 
-[Install]
-WantedBy=multi-user.target
+  azs = data.aws_availability_zones.available.names
+
+  private_subnets  = var.private_subnets
+  public_subnets   = var.public_subnets
+  database_subnets = var.database_subnets
+
+  enable_nat_gateway   = true
+  enable_vpn_gateway   = false
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+}

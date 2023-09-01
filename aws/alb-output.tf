@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,11 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
-{% for key, value in skywalking_ui_environment.items() %}
-{{ key }}="{{ value }}"
-{% endfor %}
 
-SW_OAP_ADDRESS="{% for host in groups['skywalking_oap'] %}http://{{ hostvars[host].inventory_hostname }}:{{ skywalking_ui_environment['SW_CORE_GRPC_PORT'] | default ('12800') }}{% if not loop.last %},{% endif %}{% endfor %}"
-SW_ZIPKIN_ADDRESS="{% for host in groups['skywalking_oap'] %}http://{{ hostvars[host].inventory_hostname }}:{{ skywalking_ui_environment['SW_QUERY_ZIPKIN_REST_PORT'] | default ('9412') }}{% if not loop.last %},{% endif %}{% endfor %}"
-
+output "alb_dns_name" {
+  value       = module.alb.lb_dns_name
+  description = "The domain name of the ALB that can be used to access SkyWalking UI."
+}

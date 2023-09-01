@@ -18,3 +18,4 @@ aws/terraform.tfstate.backup
 ansible/local.var.yaml
 ansible/inventory
 !ansible/inventory/template
+.terraform.tfstate.lock.info

@@ -16,5 +16,6 @@
 # under the License.
 
 output "skywalking_ui_ips" {
-  value = ["${aws_instance.skywalking-ui.*.public_ip}"]
+  value       = ["${aws_instance.skywalking-ui.*.private_ip}"]
+  description = "The IPs of the SkyWalking UI instances"
 }

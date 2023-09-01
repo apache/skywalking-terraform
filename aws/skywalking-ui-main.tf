@@ -18,9 +18,10 @@ resource "aws_instance" "skywalking-ui" {
   ami           = data.aws_ami.amazon-linux.id
   instance_type = var.instance_type
   key_name      = aws_key_pair.ssh-user.id
+  subnet_id     = element(module.vpc.private_subnets, 0)
+
   vpc_security_group_ids = [
     aws_security_group.skywalking-ui.id,
-    aws_security_group.ssh-access.id,
     aws_security_group.public-egress-access.id
   ]
   tags = merge(
@@ -35,19 +36,24 @@ resource "aws_instance" "skywalking-ui" {
 resource "aws_security_group" "skywalking-ui" {
   name        = "skywalking-ui"
   description = "Security group for SkyWalking UI"
-  ingress = [
-    {
-      from_port        = 8080
-      to_port          = 8080
-      protocol         = "tcp"
-      cidr_blocks      = ["0.0.0.0/0"]
-      description      = "Allow access from Intenet to SkyWalking UI"
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      security_groups  = []
-      self             = false
-    }
-  ]
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port       = 8080
+    to_port         = 8080
+    protocol        = "tcp"
+    description     = "Allow access from ALB to SkyWalking UI"
+    security_groups = [module.alb.security_group_id]
+  }
+
+  ingress {
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    description     = "Allow SSH access from the bastion"
+    security_groups = [aws_security_group.bastion.id]
+  }
+
   tags = var.extra_tags
 }
 

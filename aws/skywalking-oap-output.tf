@@ -16,6 +16,7 @@
 # under the License.
 
 output "skywalking_oap_ips" {
-  value = ["${aws_instance.skywalking-oap.*.public_ip}"]
+  value       = ["${aws_instance.skywalking-oap.*.private_ip}"]
+  description = "The private IPs of the OAP instances"
 }
 
