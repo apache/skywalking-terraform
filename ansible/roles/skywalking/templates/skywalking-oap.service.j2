@@ -22,7 +22,11 @@ Type=simple
 User=skywalking
 Group=skywalking
 EnvironmentFile=/home/skywalking/oap.env
+{% if hostvars[inventory_hostname]['database']['type'] == 'h2' %}
+ExecStart=/usr/local/skywalking/bin/oapService.sh
+{% else %}
 ExecStart=/usr/local/skywalking/bin/oapServiceNoInit.sh
+{% endif %}
 TimeoutSec=300
 KillMode=process
 ExecReload=/bin/kill -HUP $MAINPID

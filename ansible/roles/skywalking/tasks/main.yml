@@ -65,8 +65,7 @@
 
 - name: Check hostgroup size
   set_fact:
-    group_size: "{{ groups['skywalking_oap'] | length }}"
-    oap_init_node: "{{ [groups['skywalking_oap'][0]] }}"
+    oap_init_node: "{{ (inventory_hostname in groups['skywalking_oap'] and hostvars[inventory_hostname]['database']['type'] == 'h2') | ternary([], [groups['skywalking_oap'][0]]) }}"
 
 - name: Run the OAPSericeInit script
   command: "sudo -u skywalking -- sh -c 'set -a; source /home/skywalking/oap.env; set +a; /usr/local/skywalking/bin/oapServiceInit.sh'"

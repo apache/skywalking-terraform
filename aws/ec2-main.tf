@@ -33,7 +33,7 @@ resource "aws_security_group" "public-egress-access" {
 resource "local_file" "inventories" {
   filename        = "${path.module}/../ansible/inventory/skywalking.yaml"
   file_permission = "0600"
-  content = templatefile("${path.module}/../ansible/inventory/template/skywalking.yaml.tftpl", {
+  content = templatefile("${path.module}/../ansible/template/inventory.yaml.tftpl", {
     bastion           = aws_instance.bastion[0]
     oap_instances     = aws_instance.skywalking-oap
     ui_instances      = aws_instance.skywalking-ui

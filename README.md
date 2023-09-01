@@ -154,7 +154,7 @@ You should see output for each IP with a `SUCCESS` status:
 After confirming connectivity, proceed to install Apache SkyWalking using the Ansible playbook:
 
 ```
-ansible-playbook -u ec2-user playbooks/install-skywalking.yml -i inventory/skywalking.yaml
+ansible-playbook skywalking.yml
 ```
 
 ### 4. Configurations
