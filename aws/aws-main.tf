@@ -13,20 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[Unit]
-Description=Apache SkyWalking OAP Service
-After=network.target
+provider "aws" {
+  region     = var.region
+  access_key = var.access_key
+  secret_key = var.secret_key
+}
 
-[Service]
-Type=simple
-User=skywalking
-Group=skywalking
-EnvironmentFile=/home/skywalking/oap.env
-ExecStart=/usr/local/skywalking/bin/oapServiceNoInit.sh
-TimeoutSec=300
-KillMode=process
-ExecReload=/bin/kill -HUP $MAINPID
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
+data "aws_availability_zones" "available" {
+  state = "available"
+}

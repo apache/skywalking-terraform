@@ -16,5 +16,6 @@
 # under the License.
 
 output "ssh-user-key-file" {
-  value = local_file.ssh-user.filename
+  value       = local_file.ssh-user.filename
+  description = "The SSH key file that can be used to connect to the bastion instance."
 }
