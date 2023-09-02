@@ -118,50 +118,38 @@ variable "database_subnets" {
 
 ## Storage
 variable "storage" {
-  type        = string
-  description = "Storage type for SkyWalking OAP, can be 'h2', or 'rds-postgresql'"
-  default     = "rds-postgresql"
+  description = "Storage configuration for SkyWalking OAP"
+
+  type = object({
+    h2 = optional(object({}))
+    rds_postgresql = optional(object({
+      db_storage_size_gb     = optional(number)
+      db_max_storage_size_gb = optional(number)
+      db_instance_class      = optional(string)
+      db_name                = optional(string)
+      db_username            = optional(string)
+      db_password            = optional(string)
+    }))
+    elasticsearch = optional(object({
+      domain_name                = optional(string)
+      version                    = optional(string)
+      instance_type              = optional(string)
+      instance_count             = optional(number)
+      additional_security_groups = optional(list(string))
+      zone_awareness_enabled     = optional(bool)
+      availability_zone_count    = optional(number)
+      ebs_enabled                = optional(bool)
+    }))
+  })
+
+  default = {
+    h2 = {}
+  }
 
   validation {
-    condition     = contains(["h2", "rds-postgresql"], var.storage)
-    error_message = "Allowed values for storage are \"h2\", \"rds-postgresql\"."
+    condition     = length([for storage, value in var.storage : storage if value != null]) == 1
+    error_message = "Please only set one storage type."
   }
-}
-
-variable "db_name" {
-  type        = string
-  description = "Name of the database"
-  default     = "skywalking"
-}
-
-variable "db_username" {
-  type        = string
-  description = "Username for the database"
-  default     = "skywalking"
-}
-
-variable "db_password" {
-  type        = string
-  description = "Password for the database, if not set, a random password will be generated."
-  default     = null
-}
-
-variable "db_storage_size" {
-  type        = number
-  description = "Storage size for the database, in GB"
-  default     = 5
-}
-
-variable "db_max_storage_size" {
-  type        = number
-  description = "Maximum storage size for the database, in GB"
-  default     = 100
-}
-
-variable "db_instance_class" {
-  type        = string
-  description = "Instance class for the database"
-  default     = "db.t3.medium"
 }
 
 variable "create_lb" {

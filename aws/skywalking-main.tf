@@ -15,11 +15,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
+locals {
+  storage = {
+    for storage, config in var.storage : storage => config if config != null
+  }
+  storage_name   = keys(local.storage)[0]
+  storage_config = values(local.storage)[0]
+}
+
 module "skywalking" {
   source = "./modules/skywalking"
 
   cluster_name = var.cluster_name
-  storage      = var.storage
+  storage      = local.storage_name
 
   oap_instance_count     = var.oap_instance_count
   oap_instance_type      = var.oap_instance_type

@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,25 +14,18 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
 
-{% set database = hostvars[inventory_hostname]["database"] %}
-{% set storage = database['type'] %}
+resource "local_file" "h2_vars" {
+  count = local.storage_name == "h2" ? 1 : 0
 
-{% if storage and (storage | length) %}
-SW_STORAGE={{ storage | regex_replace('^rds_', '')}}
-{% endif %}
-
-{% if "postgresql" in storage %}
-SW_JDBC_URL=jdbc:postgresql://{{ database["host"] }}:{{ database["port"] }}/{{ database["name"] }}
-SW_DATA_SOURCE_USER={{ database['user'] }}
-SW_DATA_SOURCE_PASSWORD={{ database['password'] }}
-{% elif "elasticsearch" in storage %}
-SW_STORAGE_ES_CLUSTER_NODES={{ database["host"] }}
-SW_STORAGE_ES_HTTP_PROTOCOL=https
-{% endif %}
-
-{% for key, value in skywalking_oap_environment.items() %}
-{{ key }}="{{ value }}"
-{% endfor %}
-
+  filename        = "${path.module}/../ansible/inventory/group_vars/skywalking_oap.yaml"
+  file_permission = "0600"
+  content = templatefile("${path.module}/../ansible/template/group_vars/skywalking_oap.yaml.tftpl", {
+    database_type     = local.storage_name
+    database_host     = ""
+    database_port     = ""
+    database_user     = ""
+    database_name     = ""
+    database_password = ""
+  })
+}
