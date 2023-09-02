@@ -34,14 +34,6 @@ skywalking_oap:
 %{ for oap in oap_instances ~}
     ${oap.private_ip}:
 %{ endfor ~}
-  vars:
-    database:
-      type: ${database_type}
-      host: ${database_host}
-      port: ${database_port}
-      name: ${database_name}
-      user: ${database_user}
-      password: ${database_password}
 
 skywalking_ui:
   hosts:

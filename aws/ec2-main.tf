@@ -34,15 +34,9 @@ resource "local_file" "inventories" {
   filename        = "${path.module}/../ansible/inventory/skywalking.yaml"
   file_permission = "0600"
   content = templatefile("${path.module}/../ansible/template/inventory.yaml.tftpl", {
-    bastion           = module.skywalking.bastion_instances[0]
-    oap_instances     = module.skywalking.oap_instances
-    ui_instances      = module.skywalking.ui_instances
-    private_key_file  = module.skywalking.ssh_user_key_file
-    database_type     = var.storage
-    database_host     = var.storage == "rds-postgresql" ? module.rds[0].db_instance_address : ""
-    database_port     = var.storage == "rds-postgresql" ? module.rds[0].db_instance_port : ""
-    database_user     = var.storage == "rds-postgresql" ? module.rds[0].db_instance_username : ""
-    database_name     = var.storage == "rds-postgresql" ? module.rds[0].db_instance_name : ""
-    database_password = var.storage == "rds-postgresql" ? local.database_password : ""
+    bastion          = module.skywalking.bastion_instances[0]
+    oap_instances    = module.skywalking.oap_instances
+    ui_instances     = module.skywalking.ui_instances
+    private_key_file = module.skywalking.ssh_user_key_file
   })
 }

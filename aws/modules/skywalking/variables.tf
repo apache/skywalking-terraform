@@ -120,12 +120,12 @@ variable "extra_tags" {
 ## Storage
 variable "storage" {
   type        = string
-  description = "Storage type for SkyWalking OAP, can be `h2`, or `rds-postgresql`"
+  description = "Storage type for SkyWalking OAP, can be `h2`, `elasticsearch` or `rds-postgresql`"
   default     = "rds-postgresql"
 
   validation {
-    condition     = contains(["h2", "rds-postgresql"], var.storage)
-    error_message = "Allowed values for storage are \"h2\", \"rds-postgresql\"."
+    condition     = contains(["h2", "elasticsearch", "rds_postgresql"], var.storage)
+    error_message = "Allowed values for storage are \"h2\", \"rds_postgresql\"."
   }
 }
 

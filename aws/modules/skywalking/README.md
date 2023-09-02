@@ -46,7 +46,7 @@ No modules.
 | <a name="input_oap_instance_subnet_id"></a> [oap\_instance\_subnet\_id](#input\_oap\_instance\_subnet\_id) | Subnet ID for OAP instances | `string` | n/a | yes |
 | <a name="input_oap_instance_type"></a> [oap\_instance\_type](#input\_oap\_instance\_type) | CPU, memory, storage and networking capacity for OAP instances | `string` | `"c5.xlarge"` | no |
 | <a name="input_public_key_path"></a> [public\_key\_path](#input\_public\_key\_path) | Path to store the key file for SSH access to the instances. | `string` | `"~/.ssh"` | no |
-| <a name="input_storage"></a> [storage](#input\_storage) | Storage type for SkyWalking OAP, can be `h2`, or `rds-postgresql` | `string` | `"rds-postgresql"` | no |
+| <a name="input_storage"></a> [storage](#input\_storage) | Storage type for SkyWalking OAP, can be `h2`, `elasticsearch` or `rds-postgresql` | `string` | `"rds-postgresql"` | no |
 | <a name="input_ui_instance_ami_id"></a> [ui\_instance\_ami\_id](#input\_ui\_instance\_ami\_id) | AMI ID for UI instances, if not set, a suitable AMI ID will be selected automatically. | `string` | `""` | no |
 | <a name="input_ui_instance_count"></a> [ui\_instance\_count](#input\_ui\_instance\_count) | Number of UI instances | `number` | `1` | no |
 | <a name="input_ui_instance_security_group_ids"></a> [ui\_instance\_security\_group\_ids](#input\_ui\_instance\_security\_group\_ids) | Additional security groups for UI instances | `list(string)` | `[]` | no |
