@@ -18,13 +18,10 @@ resource "aws_instance" "bastion" {
   ami                         = data.aws_ami.amazon-linux.id
   instance_type               = var.bastion_instance_type
   key_name                    = aws_key_pair.ssh-user.id
-  subnet_id                   = element(module.vpc.public_subnets, 0)
+  subnet_id                   = var.vpc_bastion_subnet_id
   associate_public_ip_address = true
 
-  vpc_security_group_ids = [
-    aws_security_group.bastion.id,
-    aws_security_group.public-egress-access.id
-  ]
+  vpc_security_group_ids = [aws_security_group.bastion.id]
   tags = merge(
     {
       Name        = "Bastion Host"
@@ -54,13 +51,20 @@ resource "aws_instance" "bastion" {
 resource "aws_security_group" "bastion" {
   name        = "bastion"
   description = "Security group for bastion"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     description = "SSH access from the Internet"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
+    cidr_blocks = var.bastion_ssh_cidr_blocks
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 

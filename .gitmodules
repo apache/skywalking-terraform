@@ -1,0 +1,3 @@
+[submodule ".github/actions/terraform-docs"]
+	path = .github/actions/terraform-docs
+	url = https://github.com/terraform-docs/gh-actions.git

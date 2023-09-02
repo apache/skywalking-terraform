@@ -13,17 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+locals {
+  oap_ami_id = var.oap_instance_ami_id != "" ? var.oap_instance_ami_id : data.aws_ami.amazon-linux.id
+}
+
 resource "aws_instance" "skywalking-oap" {
   count         = var.oap_instance_count
-  ami           = data.aws_ami.amazon-linux.id
-  instance_type = var.instance_type
+  ami           = local.oap_ami_id
+  instance_type = var.oap_instance_type
   key_name      = aws_key_pair.ssh-user.id
-  subnet_id     = element(module.vpc.private_subnets, 0)
+  subnet_id     = var.oap_instance_subnet_id
 
-  vpc_security_group_ids = [
-    aws_security_group.skywalking-oap.id,
-    aws_security_group.public-egress-access.id
-  ]
+  vpc_security_group_ids = concat(
+    var.oap_instance_security_group_ids,
+    [aws_security_group.skywalking-oap.id]
+  )
+
   tags = merge(
     {
       Name        = "skywalking-oap"
@@ -43,7 +48,7 @@ resource "aws_instance" "skywalking-oap" {
 resource "aws_security_group" "skywalking-oap" {
   name        = "skywalking-oap"
   description = "Security group for SkyWalking OAP"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port       = 12800
@@ -65,6 +70,13 @@ resource "aws_security_group" "skywalking-oap" {
     protocol        = "tcp"
     description     = "Allow SSH access from the bastion"
     security_groups = [aws_security_group.bastion.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = var.extra_tags

@@ -13,17 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+locals {
+  ui_ami_id = var.ui_instance_ami_id != "" ? var.ui_instance_ami_id : data.aws_ami.amazon-linux.id
+}
+
 resource "aws_instance" "skywalking-ui" {
   count         = var.ui_instance_count
-  ami           = data.aws_ami.amazon-linux.id
-  instance_type = var.instance_type
+  ami           = local.ui_ami_id
+  instance_type = var.ui_instance_type
   key_name      = aws_key_pair.ssh-user.id
-  subnet_id     = element(module.vpc.private_subnets, 0)
+  subnet_id     = var.ui_instance_subnet_id
 
-  vpc_security_group_ids = [
-    aws_security_group.skywalking-ui.id,
-    aws_security_group.public-egress-access.id
-  ]
+  vpc_security_group_ids = concat(
+    var.ui_instance_security_group_ids,
+    [aws_security_group.skywalking-ui.id]
+  )
+
   tags = merge(
     {
       Name        = "skywalking-ui"
@@ -36,15 +41,7 @@ resource "aws_instance" "skywalking-ui" {
 resource "aws_security_group" "skywalking-ui" {
   name        = "skywalking-ui"
   description = "Security group for SkyWalking UI"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    from_port       = 8080
-    to_port         = 8080
-    protocol        = "tcp"
-    description     = "Allow access from ALB to SkyWalking UI"
-    security_groups = [module.alb.security_group_id]
-  }
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port       = 22
@@ -52,6 +49,14 @@ resource "aws_security_group" "skywalking-ui" {
     protocol        = "tcp"
     description     = "Allow SSH access from the bastion"
     security_groups = [aws_security_group.bastion.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
   }
 
   tags = var.extra_tags
