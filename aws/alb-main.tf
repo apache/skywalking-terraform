@@ -17,6 +17,8 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 8.0"
 
+  create_lb = var.create_lb
+
   name = var.cluster_name
 
   load_balancer_type = "application"
@@ -50,8 +52,8 @@ module "alb" {
       backend_port     = 8080
       target_type      = "instance"
       targets = [
-        for i, ui in aws_instance.skywalking-ui : {
-          target_id = ui.id
+        for i, ui_id in module.skywalking.ui_instance_ids : {
+          target_id = ui_id
           port      = 8080
         }
       ]
@@ -67,4 +69,20 @@ module "alb" {
   ]
 
   tags = var.extra_tags
+}
+
+resource "aws_security_group" "alb-skywalking-ui" {
+  count = var.create_lb ? 1 : 0
+
+  name        = "alb-skywalking-ui"
+  description = "Security group for ALB to access SkyWalking UI"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port       = 8080
+    to_port         = 8080
+    protocol        = "tcp"
+    description     = "Allow access from ALB to SkyWalking UI"
+    security_groups = [module.alb.security_group_id]
+  }
 }

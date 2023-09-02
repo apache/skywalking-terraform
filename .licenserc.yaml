@@ -22,24 +22,11 @@ header:
     copyright-owner: Apache Software Foundation
 
   paths-ignore:
-    - '.github/ISSUE_TEMPLATE'
-    - '.github/PULL_REQUEST_TEMPLATE'
-    - '**/.gitignore'
-    - '.gitmodules'
-    - '.lift'
-    - 'docker/.env'
-    - 'dist'
-    - 'licenses'
-    - 'dist-material/release-docs'
+    - '.terraform.lock.hcl'
     - '**/*.md'
     - '**/*.json'
-    - '**/*.ftl'
-    - '**/target/**'
-    - '**/*.iml'
-    - '**/*.ini'
-    - '**/*.crt'
-    - '**/*.pem'
-    - '**/*.txt'
+    - '**/.gitignore'
+    - '.gitmodules'
     - 'LICENSE'
     - 'NOTICE'
 

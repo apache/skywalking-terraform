@@ -15,7 +15,22 @@
 # specific language governing permissions and limitations
 # under the License.
 
+output "oap_ips" {
+  value       = module.skywalking.oap_ips
+  description = "The private IPs of the OAP instances"
+}
+
+output "ui_ips" {
+  value       = module.skywalking.ui_ips
+  description = "The IPs of the SkyWalking UI instances"
+}
+
 output "bastion_ips" {
-  value       = aws_instance.bastion.*.public_ip
-  description = "The public IP that can be used to SSH into the bastion host."
+  value       = module.skywalking.bastion_ips
+  description = "The public IP that can be used to SSH into the bastion host"
+}
+
+output "ssh_user_key_file" {
+  value       = module.skywalking.ssh_user_key_file
+  description = "The SSH private key file to use to connect to the bastion host"
 }
