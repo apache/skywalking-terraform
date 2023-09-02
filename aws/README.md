@@ -2,7 +2,7 @@
 
 - [Terraform installed](https://developer.hashicorp.com/terraform/downloads).
 - AWS Credentials: Ensure your environment is set up with the necessary AWS credentials. This can be done in various ways, such as:
-  - Setting the `access_key` and `secret_key` variable in Terraform.
+  - Setting the [`access_key`](configurations.md#input_access_key) and [`secret_key`](configurations.md#input_secret_key) variable in Terraform.
   - Setting up environment variables (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`).
   - Configuring using the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
   - Using IAM roles with necessary permissions if you're running Terraform on an AWS EC2 instance.
@@ -55,7 +55,8 @@ terraform apply
 > **Security Attention**: two security rules are created for the bastion host:
 >  - `ssh-access`: Allows SSH access from any IP (`0.0.0.0/0`).
 >    **Please note** that this is potentially insecure and you should restrict
->    the IP range by setting the variable `bastion_ssh_cidr_blocks`.
+>    the IP range by setting the variable
+>    [`bastion_ssh_cidr_blocks`](configurations.md#input_bastion_ssh_cidr_blocks).
 >  - `public-egress-access`: Allows egress access to the internet for the instances.
 
 After all the resources are created, you can head to the
@@ -77,9 +78,9 @@ ssh -i "$KEY_FILE" ec2-user@"$BASTION_IP"
 
 ### Access the SkyWalking UI ALB
 
-If you set the variable `create_lb` to `true` (this is set by default, so if you
-didn't set it to `false`, you should have an ALB), you can access the SkyWalking
-UI ALB with the command:
+If you set the variable [`create_lb`](configurations.md#input_create_lb) to
+`true` (this is set by default, so if you didn't set it to `false`, you should
+have an ALB), you can access the SkyWalking UI ALB with the command:
 
 ```shell
 terraform output -raw alb_dns_name
