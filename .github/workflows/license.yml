@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: License
+name: CI
 
 on:
   push:
@@ -22,8 +22,8 @@ on:
   pull_request:
 
 jobs:
-  license:
-    name: license
+  ci:
+    name: ci
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,3 +34,5 @@ jobs:
         uses: apache/skywalking-eyes/header/@d299844e334855087f18ae1fe3c81ae8d22bc282
         with:
           config: .licenserc.yaml
+      - name: Lint Ansible Playbook
+        uses: ansible/ansible-lint@v6.21.1

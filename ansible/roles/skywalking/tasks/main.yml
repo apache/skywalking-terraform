@@ -15,17 +15,17 @@
 
 ---
 - name: Create and set permissions for skywalking directory
-  file:
+  ansible.builtin.file:
     path: /usr/local/skywalking
     state: directory
-    recurse: yes
+    recurse: true
     owner: skywalking
     group: skywalking
     mode: "0755"
 
 - name: Download remote Apache SkyWalking tarball
   when: skywalking_tarball is match('^https?://.*')
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ skywalking_tarball }}"
     dest: /usr/local/skywalking/apache-skywalking-apm.tar.gz
 
@@ -39,16 +39,16 @@
     mode: '0755'
 
 - name: Extract tarball
-  unarchive:
+  ansible.builtin.unarchive:
     src: /usr/local/skywalking/apache-skywalking-apm.tar.gz
     dest: /usr/local/skywalking
-    remote_src: yes
+    remote_src: true
     owner: skywalking
     group: skywalking
     extra_opts: [--strip-components=1]
 
 - name: Generate environment file for webui service
-  template:
+  ansible.builtin.template:
     src: skywalking-ui.env.j2
     dest: /home/skywalking/webapp.env
     owner: skywalking
@@ -56,7 +56,7 @@
   when: inventory_hostname in groups['skywalking_ui']
 
 - name: Generate environment file for OAP service
-  template:
+  ansible.builtin.template:
     src: skywalking-oap.env.j2
     dest: /home/skywalking/oap.env
     owner: skywalking
@@ -64,15 +64,15 @@
   when: inventory_hostname in groups['skywalking_oap']
 
 - name: Check hostgroup size
-  set_fact:
+  ansible.builtin.set_fact:
     oap_init_node: "{{ (inventory_hostname in groups['skywalking_oap'] and hostvars[inventory_hostname]['database']['type'] == 'h2') | ternary([], [groups['skywalking_oap'][0]]) }}"
 
 - name: Run the OAPSericeInit script
-  command: "sudo -u skywalking -- sh -c 'set -a; source /home/skywalking/oap.env; set +a; /usr/local/skywalking/bin/oapServiceInit.sh'"
+  ansible.builtin.command: "sudo -u skywalking -- sh -c 'set -a; source /home/skywalking/oap.env; set +a; /usr/local/skywalking/bin/oapServiceInit.sh'"
   when: inventory_hostname in oap_init_node
 
 - name: Generate systemd unit file for oap service
-  template:
+  ansible.builtin.template:
     src: skywalking-oap.service.j2
     dest: /usr/lib/systemd/system/skywalking-oap.service
     owner: root
@@ -80,7 +80,7 @@
   when: inventory_hostname in groups['skywalking_oap']
 
 - name: Generate systemd unit file for webui service
-  template:
+  ansible.builtin.template:
     src: skywalking-ui.service.j2
     dest: /usr/lib/systemd/system/skywalking-ui.service
     owner: root
@@ -88,30 +88,29 @@
   when: inventory_hostname in groups['skywalking_ui']
 
 - name: Reload systemd
-  systemd:
-    daemon_reload: yes
+  ansible.builtin.systemd:
+    daemon_reload: true
 
 - name: Link and enable skywalking-oap service
-  systemd:
+  ansible.builtin.systemd:
     name: skywalking-oap
-    enabled: yes
+    enabled: true
   when: inventory_hostname in groups['skywalking_oap']
 
 - name: Link and enable skywalking-ui service
-  systemd:
+  ansible.builtin.systemd:
     name: skywalking-ui
-    enabled: yes
+    enabled: true
   when: inventory_hostname in groups['skywalking_ui']
 
 - name: Start SkyWalking-OAP service
-  systemd:
+  ansible.builtin.systemd:
     name: skywalking-oap
     state: started
   when: inventory_hostname in groups['skywalking_oap']
 
 - name: Start SkyWalking-UI service
-  systemd:
+  ansible.builtin.systemd:
     name: skywalking-ui
     state: started
   when: inventory_hostname in groups['skywalking_ui']
-

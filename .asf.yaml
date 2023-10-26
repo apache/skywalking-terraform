@@ -22,6 +22,7 @@ github:
     - skywalking
     - terraform
     - ansible
+  dependabot_updates: false
   enabled_merge_buttons:
     squash:  true
     merge:   false

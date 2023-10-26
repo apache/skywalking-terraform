@@ -15,19 +15,19 @@
 
 ---
 - name: Install Java 11 on RHEL-based systems
-  package:
+  ansible.builtin.package:
     name: java-11-openjdk
     state: present
   when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
 
 - name: Install Java 11 on Ubuntu systems
-  package:
+  ansible.builtin.package:
     name: openjdk-11-jdk
     state: present
   when: ansible_distribution == 'Ubuntu'
 
 - name: Install Java 11 on Amazon distribution
-  package:
+  ansible.builtin.package:
     name: java-11-amazon-corretto
     state: present
   when: ansible_distribution == 'Amazon'
