@@ -37,7 +37,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-          ref: ${{ github.event.pull_request.head.ref }}
       - name: Render and check docs is updated
         uses: ./.github/actions/terraform-docs
         with:
