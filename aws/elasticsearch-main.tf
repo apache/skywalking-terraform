@@ -16,14 +16,14 @@
 # under the License.
 
 locals {
-  elasticsearch_domain_name                = coalesce(lookup(local.storage_config, "domain_name"), var.cluster_name)
-  elasticsearch_version                    = coalesce(lookup(local.storage_config, "version"), "7.10")
-  elasticsearch_instance_type              = coalesce(lookup(local.storage_config, "instance_type"), "m3.medium.elasticsearch")
-  elasticsearch_instance_count             = coalesce(lookup(local.storage_config, "instance_count"), 2)
-  elasticsearch_additional_security_groups = coalesce(lookup(local.storage_config, "additional_security_groups"), [])
-  elasticsearch_zone_awareness_enabled     = coalesce(lookup(local.storage_config, "zone_awareness_enabled"), false)
-  elasticsearch_availability_zone_count    = coalesce(lookup(local.storage_config, "availability_zone_count"), 2)
-  elasticsearch_ebs_enabled                = coalesce(lookup(local.storage_config, "ebs_enabled"), false)
+  elasticsearch_domain_name                = coalesce(lookup(local.storage_config, "domain_name", var.cluster_name))
+  elasticsearch_version                    = coalesce(lookup(local.storage_config, "version", "7.10"))
+  elasticsearch_instance_type              = coalesce(lookup(local.storage_config, "instance_type","m3.medium.elasticsearch"))
+  elasticsearch_instance_count             = coalesce(lookup(local.storage_config, "instance_count", 2))
+  elasticsearch_additional_security_groups = coalesce(lookup(local.storage_config, "additional_security_groups", []))
+  elasticsearch_zone_awareness_enabled     = coalesce(lookup(local.storage_config, "zone_awareness_enabled", false))
+  elasticsearch_availability_zone_count    = coalesce(lookup(local.storage_config, "availability_zone_count",2))
+  elasticsearch_ebs_enabled                = coalesce(lookup(local.storage_config, "ebs_enabled",false))
 }
 
 data "aws_caller_identity" "current" {}

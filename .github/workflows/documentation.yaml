@@ -34,10 +34,9 @@ jobs:
             output-file: README.md
       fail-fast:  true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
-          ref: ${{ github.event.pull_request.head.ref }}
       - name: Render and check docs is updated
         uses: ./.github/actions/terraform-docs
         with:
